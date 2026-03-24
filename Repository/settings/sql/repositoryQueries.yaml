@@ -1,0 +1,26 @@
+queries:
+  #language=tsql
+  GetExternalStatuses: |-
+    SELECT
+      old_status.Value AS OldValue,
+      new_status.Value AS NewValue
+    FROM (SELECT 1 AS Id) AS anchor
+    LEFT JOIN (
+      SELECT ts.StatusStr AS Value
+      FROM DocPathFolders dpf
+      JOIN api.v_ApiTransferStatus ts ON ts.FolderGUID = dpf.FolderGUID
+      WHERE dpf.ID = @oldValue
+    ) AS old_status ON 1=1
+    LEFT JOIN (
+      SELECT ts.StatusStr AS Value
+      FROM DocPathFolders dpf
+      JOIN api.v_ApiTransferStatus ts ON ts.FolderGUID = dpf.FolderGUID
+      WHERE dpf.ID = @newValue
+    ) AS new_status ON 1=1;
+    
+  #language=tsql
+  GetDocClasses: |-
+    select
+    Id,
+    ShortName
+    from DocClasses where ShortName in (SELECT value FROM STRING_SPLIT(@docClassesShortNames, ','));

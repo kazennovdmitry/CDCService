@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>CDCWorker.Service-dbf7a501-0aea-4350-b261-3620c71faf97</UserSecretsId>
+        <RootNamespace>CDC.CDCService</RootNamespace>
+        <AssemblyName>CDC.CDCService</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.SqlClient" />
+        <PackageReference Include="Microsoft.Extensions.Logging" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="RepoDb" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Kafka\Kafka.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Repository\Repository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="settings\sql\**\*.yaml">
+            <Link>settings\sql\%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>

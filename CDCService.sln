@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDCService", "CDCService\CDCService.csproj", "{4DDB9E35-230B-47AB-9671-D6041EF6ABFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kafka", "Kafka\Kafka.csproj", "{8DC599B2-85E5-4E48-98B2-579941C1FD3E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{656C6A39-0DAB-4622-877F-A03FF79459E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{43BB89D4-9AF4-43C3-8D1E-D131A558A7E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{076A8445-CD9A-4600-8A44-4F2D88983141}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{56480F93-C0E5-4482-87EA-17A35B768C20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{B931559E-2956-46DC-9C99-18C13B8BD3B9}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+		Dockerfile_cdc = Dockerfile_cdc
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DDB9E35-230B-47AB-9671-D6041EF6ABFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DDB9E35-230B-47AB-9671-D6041EF6ABFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DDB9E35-230B-47AB-9671-D6041EF6ABFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DDB9E35-230B-47AB-9671-D6041EF6ABFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DC599B2-85E5-4E48-98B2-579941C1FD3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DC599B2-85E5-4E48-98B2-579941C1FD3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DC599B2-85E5-4E48-98B2-579941C1FD3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DC599B2-85E5-4E48-98B2-579941C1FD3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{076A8445-CD9A-4600-8A44-4F2D88983141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{076A8445-CD9A-4600-8A44-4F2D88983141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{076A8445-CD9A-4600-8A44-4F2D88983141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{076A8445-CD9A-4600-8A44-4F2D88983141}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56480F93-C0E5-4482-87EA-17A35B768C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56480F93-C0E5-4482-87EA-17A35B768C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56480F93-C0E5-4482-87EA-17A35B768C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56480F93-C0E5-4482-87EA-17A35B768C20}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8DC599B2-85E5-4E48-98B2-579941C1FD3E} = {656C6A39-0DAB-4622-877F-A03FF79459E5}
+		{076A8445-CD9A-4600-8A44-4F2D88983141} = {43BB89D4-9AF4-43C3-8D1E-D131A558A7E8}
+		{56480F93-C0E5-4482-87EA-17A35B768C20} = {656C6A39-0DAB-4622-877F-A03FF79459E5}
+	EndGlobalSection
+EndGlobal

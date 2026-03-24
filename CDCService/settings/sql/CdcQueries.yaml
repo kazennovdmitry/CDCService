@@ -1,0 +1,89 @@
+queries:
+  #language=tsql
+  GetAllChangesDocuments: |-
+    SELECT * FROM cdc.fn_cdc_get_all_changes_Documents_CDC(@fromLSN, @toLSN, @rowFilterOption)
+      
+  #language=tsql
+  GetAllChangesDocumentsBatch: |-
+    SELECT ch.*
+    FROM cdc.fn_cdc_get_all_changes_Documents_CDC(@fromLsn, @toLsn, @rowFilterOption) AS ch
+    WHERE ch.__$start_lsn > @fromLsn
+      AND (@docClassIdsCsv IS NULL OR @docClassIdsCsv = ''
+           OR ch.DocClass IN (
+                SELECT CAST([value] AS INT)
+                FROM STRING_SPLIT(@docClassIdsCsv, ',')
+           ))
+    ORDER BY ch.__$start_lsn, ch.__$seqval
+      
+  #language=tsql
+  GetMinUnprocessedLsn: |-
+    SELECT TOP (1) * FROM
+    (
+        SELECT 'Documents' AS TableName, MIN(__$start_lsn) AS Lsn
+        FROM cdc.fn_cdc_get_all_changes_Documents_CDC(@fromLsn, @toLsn, @rowFilterOption)
+        WHERE __$start_lsn > @fromLsn HAVING MIN(__$start_lsn) IS NOT NULL
+      /*UNION ALL
+        SELECT 'tempDocuments' AS TableName, MIN(__$start_lsn) AS Lsn
+        FROM cdc.fn_cdc_get_all_changes_tempDocuments_CDC(@fromLsn, @toLsn, @rowFilterOption)
+        WHERE __$start_lsn > @fromLsn HAVING MIN(__$start_lsn) IS NOT NULL*/
+    ) as combinedResults
+    ORDER BY Lsn
+    
+  #language=tsql
+  GetToLsnForBatch: |-
+    WITH next_lsns AS (
+        SELECT DISTINCT TOP (@batchMaxLsns) __$start_lsn
+        FROM cdc.Documents_CDC_CT WITH (READPAST)
+        WHERE __$start_lsn > @fromLsn
+          AND (@docClassIdsCsv IS NULL OR @docClassIdsCsv = ''
+               OR DocClass IN (
+                    SELECT CAST([value] AS INT)
+                    FROM STRING_SPLIT(@docClassIdsCsv, ',')
+               ))
+        ORDER BY __$start_lsn
+    )
+    SELECT 'Documents' AS TableName, MAX(__$start_lsn) AS Lsn
+    FROM next_lsns
+        
+  #language=tsql
+  GetMaxProcessedLsn: |-
+    SELECT TOP(1) TableName, LastLSN as Lsn FROM cdc.ProcessedLSN
+      WHERE LastLSN IN (SELECT MAX(LastLSN) FROM cdc.ProcessedLSN)
+                                 
+  #language=tsql
+  SetProcessedLsn: |-
+    INSERT INTO cdc.ProcessedLSN (LastLSN, TableName) VALUES (@lsn, @tableName)
+  
+  #language=tsql
+  GetMaxLsn: |-
+    SELECT TOP (1) * FROM
+    (
+        SELECT 'Documents' AS TableName, MAX(__$start_lsn) AS Lsn FROM cdc.Documents_CDC_CT HAVING MAX(__$start_lsn) IS NOT NULL
+        /*UNION ALL
+        SELECT 'tempDocuments' AS TableName, MAX(__$start_lsn) AS Lsn FROM cdc.tempDocuments_CDC_CT HAVING MAX(__$start_lsn) IS NOT NULL*/
+    ) as combinedResults
+    ORDER BY Lsn DESC
+      
+  #language=tsql
+  GetMinLsn: |-
+    SELECT TOP (1) * FROM
+    (
+        SELECT 'Documents' AS TableName, MIN(__$start_lsn) as Lsn FROM cdc.Documents_CDC_CT HAVING MIN(__$start_lsn) IS NOT NULL
+        /*UNION ALL
+        SELECT 'tempDocuments' AS TableName, MIN(__$start_lsn) as Lsn FROM cdc.tempDocuments_CDC_CT HAVING MIN(__$start_lsn) IS NOT NULL*/
+    ) as combinedResults
+    ORDER BY Lsn
+    
+  #language=tsql
+  ClearProcessedLSNs: |-
+    DELETE FROM cdc.ProcessedLSN 
+      WHERE
+        ([TableName] = 'Documents'
+          AND NOT EXISTS (SELECT NULL
+                          FROM cdc.Documents_CDC_CT
+                          WHERE cdc.Documents_CDC_CT.__$start_lsn = cdc.ProcessedLSN.LastLSN))
+            /*OR
+            ([TableName] = 'tempDocuments' 
+            AND NOT EXISTS (SELECT NULL 
+                          FROM cdc.tempDocuments_CDC_CT 
+                          WHERE cdc.tempDocuments_CDC_CT.__$start_lsn = cdc.ProcessedLSN.LastLSN))*/
